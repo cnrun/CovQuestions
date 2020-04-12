@@ -32,18 +32,30 @@ namespace Validator
             ) return Convert.ToDouble(value);
             return value;
         }
-        private void Analyze()
+        private void Analyze(string ruleJson, string dataJson)
         {
-            var ruleJson = "";
-            var dataJson = "";
             var rule = JsonFrom(ruleJson);
             var data = GetDataObject(JsonFrom(dataJson));
             var evaluator = new JsonLogicEvaluator(EvaluateOperators.Default);
+            var result = evaluator.Apply(rule, data);
+            Console.WriteLine($"-->{result}");
+
         }
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
-            new Program().Analyze();
+            string ruleJson="";
+            string dataJson="null";
+            try{
+                ruleJson = System.IO.File.ReadAllText("../../../json-logic/example.json");
+                Console.WriteLine($"Read {ruleJson.Count()}");
+                new Program().Analyze(ruleJson, dataJson);
+            }
+            catch
+            {
+                Console.WriteLine("Can't parse");
+                Console.WriteLine($"{ruleJson}");
+            }
         }
     }
 }
