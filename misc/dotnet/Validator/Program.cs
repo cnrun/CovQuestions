@@ -43,6 +43,8 @@ namespace Validator
         }
         static void Main(string[] args)
         {
+            // https://github.com/alexanderthieme/CovQuestions/blob/exampleWithJsonLogic/react-with-json-logic/src/test/testCases/contactQuestionWithDateVariableAndSkippingQuestion.questionnaire.ts
+            // https://github.com/cnrun/CovQuestions/blob/json-logic/json-logic/example.json
             Console.WriteLine("Hello World!");
             string ruleJson="";
             string dataJson="null";
