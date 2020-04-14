@@ -121,3 +121,4 @@ temp/
 # End of https://www.gitignore.io/api/web,node,visualstudiocode
 misc/dotnet/Validator/bin/*
 misc/dotnet/Validator/obj/*
+react-with-json-logic/.vscode/launch.json
