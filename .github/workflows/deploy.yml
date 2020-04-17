@@ -1,7 +1,8 @@
-name: CI
+name: CD
 on:
-  pull_request:
-    branches: [ master ]
+  push:
+    branches:
+      - master
     paths:
     - 'react-with-json-logic/**'
 
@@ -18,12 +19,6 @@ jobs:
     - name: Install Packages
       run: npm install
       working-directory: react-with-json-logic/
-    - name: Check format
-      run: npm run lint
-      working-directory: react-with-json-logic/
-    - name: Run tests
-      run: CI=true npm run test
-      working-directory: react-with-json-logic/
     - name: Build App
       run: npm run build
       working-directory: react-with-json-logic/
@@ -34,4 +29,10 @@ jobs:
         name: react-app
         # Directory containing files to upload
         path: react-with-json-logic/build/
-      
+    - name: Publish to blob storage
+      uses: bacongobbler/azure-blob-storage-upload@v1.0.0
+      with:
+        source_dir: react-with-json-logic/build/
+        container_name: $web
+        connection_string: ${{ secrets.ConnectionString }}
+        extra_args: ''
