@@ -1,37 +1,54 @@
-import { Button, Grid, ListItemText, Snackbar, TextField } from "@material-ui/core";
+import { Button, Grid, ListItemText, Snackbar } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { Alert } from "@material-ui/lab";
 import { IQuestionnaire } from "../logic/schema";
+import { MuiForm } from "rjsf-material-ui";
 // @ts-ignore
 import jsonschema from "jsonschema";
 
-type QuestionnaireTextFieldProps = {
-  value: string;
+type QuestionnaireEditorProps = {
+  value: IQuestionnaire | undefined;
   schema: jsonschema.Schema | undefined;
   onChange: () => void;
   resetQuestionnaire: () => void;
   loadQuestionnaire: (newQuestionnaire: IQuestionnaire) => void;
 };
 
-export function QuestionnaireTextField(props: QuestionnaireTextFieldProps) {
-  const [questionnaireAsString, setQuestionnaireAsString] = useState("");
+export function QuestionnaireEditor(props: QuestionnaireEditorProps) {
+  const [questionnaire, setQuestionnaire] = useState<IQuestionnaire>({} as IQuestionnaire);
   const [showJsonInvalidMessage, setShowJsonInvalidMessage] = useState(false);
   const [schemaValidationErrors, setSchemaValidationErrors] = useState<jsonschema.ValidationError[]>([]);
 
+  const style = `
+  .rjsf > .MuiFormControl-root  {
+    height: 600px;
+    overflow: auto;
+  }
+  .rjsf .MuiBox-root {
+    padding: 0;
+  }
+  .rjsf .form-group, .rjsf .panel-body {
+    margin: 0;
+  }
+  `;
+
   const updateQuestionnaire = () => {
     setSchemaValidationErrors([]);
+    if (questionnaire === undefined) {
+      return;
+    }
+    if (props.schema === undefined) {
+      return;
+    }
     try {
-      const json = JSON.parse(questionnaireAsString);
-      if (props.schema !== undefined) {
-        const validator = new jsonschema.Validator();
-        const validationResult = validator.validate(json, props.schema as jsonschema.Schema);
-        if (validationResult.errors.length > 0) {
-          setSchemaValidationErrors(validationResult.errors);
-          setShowJsonInvalidMessage(true);
-          return;
-        }
+      const validator = new jsonschema.Validator();
+      const validationResult = validator.validate(questionnaire, props.schema);
+      if (validationResult.errors.length > 0) {
+        setSchemaValidationErrors(validationResult.errors);
+        setShowJsonInvalidMessage(true);
+        return;
       }
-      props.loadQuestionnaire(json);
+      props.loadQuestionnaire(questionnaire);
     } catch (e) {
       setShowJsonInvalidMessage(true);
     }
@@ -46,51 +63,60 @@ export function QuestionnaireTextField(props: QuestionnaireTextFieldProps) {
   };
 
   const downloadJson = () => {
+    if (questionnaire === undefined) {
+      return;
+    }
     // after https://stackoverflow.com/questions/44656610/download-a-string-as-txt-file-in-react/44661948
     const linkElement = document.createElement("a");
-    const jsonFile = new Blob([questionnaireAsString], { type: "text/plain" });
+    const jsonFile = new Blob([JSON.stringify(questionnaire, null, 2)], { type: "text/plain" });
     linkElement.href = URL.createObjectURL(jsonFile);
-    linkElement.download = JSON.parse(questionnaireAsString).id + ".json";
+    linkElement.download = questionnaire.id + ".json";
     document.body.appendChild(linkElement);
     linkElement.click();
   };
 
   useEffect(() => {
-    setQuestionnaireAsString(props.value);
+    if (props.value === undefined) {
+      setQuestionnaire({} as IQuestionnaire);
+    } else {
+      setQuestionnaire(props.value);
+    }
   }, [props.value]);
 
   return (
     <Grid container direction="column">
+      <style>{style}</style>
       <Grid container>
-        <Grid item xs={6}>
-          <Button onClick={updateQuestionnaire} variant="contained" color="secondary">
-            Load Questionnaire
-          </Button>
-        </Grid>
-        <Grid container item xs={6} justify="flex-end">
+        <Grid container item xs={12} justify="flex-end">
           <Button onClick={props.resetQuestionnaire} variant="contained" color="secondary">
             Reset Questionnaire
           </Button>
         </Grid>
       </Grid>
       <Grid item xs={12}>
-        <TextField
-          id="questionnaire-json-text-field"
-          multiline
-          rows="20"
-          variant="outlined"
-          fullWidth={true}
-          value={questionnaireAsString}
-          onChange={(e) => {
-            setQuestionnaireAsString(e.target.value);
-            props.onChange();
-          }}
-        />
-      </Grid>
-      <Grid container item xs={12} justify="flex-end">
-        <Button onClick={downloadJson} variant="contained" color="primary">
-          Download Questionnaire
-        </Button>
+        {props.schema !== undefined ? (
+          <MuiForm
+            schema={props.schema}
+            formData={questionnaire}
+            onChange={(value: any) => {
+              console.log("new value", value);
+              setQuestionnaire(value.formData);
+              props.onChange();
+            }}
+            onSubmit={() => {
+              updateQuestionnaire();
+            }}
+          >
+            <div>
+              <Button type="submit" variant="contained" color="secondary">
+                Use as Questionnaire
+              </Button>
+              <Button onClick={downloadJson} variant="contained" color="primary">
+                Download Questionnaire
+              </Button>
+            </div>
+          </MuiForm>
+        ) : null}
       </Grid>
 
       {schemaValidationErrors.length > 0 ? (
