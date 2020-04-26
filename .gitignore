@@ -122,5 +122,3 @@ temp/
 misc/dotnet/Validator/bin/*
 misc/dotnet/Validator/obj/*
 react-with-json-logic/.vscode/launch.json
-ts-json-schema-generator/.circleci
-ts-json-schema-generator/.vscode
