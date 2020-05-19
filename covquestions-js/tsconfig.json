@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["es6", "dom", "esnext"],
+    "sourceMap": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "declaration": true,
+    "outDir": "./dist",
+    "sourceRoot": "src"
+  },
+  "exclude": ["dist", "examples", "node_modules", ".vscode", ".vs", ".git"]
+}

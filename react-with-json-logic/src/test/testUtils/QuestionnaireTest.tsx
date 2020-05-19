@@ -1,7 +1,7 @@
 import React from "react";
 import { fireEvent, render, RenderResult } from "@testing-library/react";
 import UserEvent from "@testing-library/user-event";
-import { Questionnaire } from "../../models/Questionnaire";
+import { Questionnaire } from "covquestions-js/models/Questionnaire.generated";
 import { QuestionnaireExecution } from "../../components/QuestionnaireExecution";
 
 export class QuestionnaireTest {
@@ -32,7 +32,7 @@ export class QuestionnaireTest {
   }
 
   public async enterText(text: string) {
-    const numericInput = (await this.renderedApp.findByTestId("TextInput")).querySelector("input");
+    const numericInput = this.renderedApp.container.querySelector("input");
     fireEvent.change(numericInput!, { target: { value: text } });
   }
 

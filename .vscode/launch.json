@@ -1,27 +1,80 @@
 {
-   // Use IntelliSense to find out which attributes exist for C# debugging
-   // Use hover for the description of the existing attributes
-   // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
-   "version": "0.2.0",
-   "configurations": [
-        {
-            "name": ".NET Core Launch (console)",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/misc/dotnet/Validator/bin/Debug/netcoreapp3.1/Validator.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}/misc/dotnet/Validator",
-            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
-            "console": "internalConsole",
-            "stopAtEntry": false
-        },
-        {
-            "name": ".NET Core Attach",
-            "type": "coreclr",
-            "request": "attach",
-            "processId": "${command:pickProcess}"
-        }
-    ]
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": ".NET Core Launch (console)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      // If you have changed target frameworks, make sure to update the program path.
+      "program": "${workspaceFolder}/misc/dotnet/Validator/bin/Debug/netcoreapp3.1/Validator.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/misc/dotnet/Validator",
+      // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+      "console": "internalConsole",
+      "stopAtEntry": false
+    },
+    {
+      "name": ".NET Core Attach",
+      "type": "coreclr",
+      "request": "attach",
+      "processId": "${command:pickProcess}"
+    },
+    {
+      "name": "Index TS File",
+      "type": "node",
+      "request": "launch",
+      "args": ["index.ts"],
+      "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
+      "sourceMaps": true,
+      "cwd": "${workspaceRoot}/api/v1/",
+      "protocol": "inspector",
+      "env": {
+        "DEVELOPMENT": "true"
+      }
+    },
+    {
+      "name": "Pre_Build TS File",
+      "type": "node",
+      "request": "launch",
+      "args": ["scripts/pre_build.ts"],
+      "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
+      "sourceMaps": true,
+      "cwd": "${workspaceRoot}/api/v1/",
+      "protocol": "inspector"
+    },
+    {
+      "name": "Update Schemas TS File",
+      "type": "node",
+      "request": "launch",
+      "args": ["scripts/updateFilesFromSchema.ts"],
+      "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
+      "sourceMaps": true,
+      "cwd": "${workspaceRoot}",
+      "protocol": "inspector"
+    },
+    {
+      "name": "Generate Types TS File",
+      "type": "node",
+      "request": "launch",
+      "args": ["scripts/generateTypes.ts"],
+      "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
+      "sourceMaps": true,
+      "cwd": "${workspaceRoot}",
+      "protocol": "inspector"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Jest Test",
+      "program": "${workspaceFolder}\\api\\v1\\node_modules\\jest\\bin\\jest",
+      "args": ["--runInBand", "--config=${workspaceFolder}\\api\\v1\\jest.config.js"],
+      "cwd": "${workspaceRoot}\\api\\v1",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    }
+  ]
 }
